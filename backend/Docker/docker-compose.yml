@@ -1,0 +1,39 @@
+﻿version: "3"
+services:
+  client:
+    image: node:16.10-alpine3.11
+    working_dir: /app
+    volumes:
+      - ".:/app"  
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+       - "3000:3000" 
+    command: sh -c "npm install && npm start"
+
+
+  Backend:
+    image: backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://rc1b-u7zlzo5gs9o7vzi4.mdb.yandexcloud.net:6432/team-8
+    ports:
+      - "3001:3001"
+    depends_on:
+      - dbPostg
+    restart: always
+
+  dbPostg:
+    image: postgres
+    container_name: dbPostg
+    environment:
+      - POSTGRES_USER=team-8
+      - POSTGRES_PASSWORD=kuW1chohpeib8ooShoo4ya5jaicaeLao
+      - POSTGRES_DB=team-8
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "6432:6432"
+    restart: always
+
+
+  
